@@ -9,12 +9,13 @@ window.onload = function() {
         width: 20,
         height: 30,
         dx: 0,
-        dy: -2,
+        dy: 0,
         jumping: false
     };
 
     let platforms = [];
     let level = 1;
+    let lastTime = 0;
 
     function loadLevel() {
         fetch(`levels/level${level}.json`)
@@ -37,15 +38,18 @@ window.onload = function() {
         ctx.fillText(`Level: ${level}`, 10, 30);
     }
 
-    function updatePlayer() {
+    function updatePlayer(time = 0) {
+        const deltaTime = (time - lastTime) / 10; // convert to seconds
+        lastTime = time;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawPlayer();
         drawPlatforms();
         drawLevel();
-        player.x += player.dx;
+        player.x += player.dx * deltaTime;
         if (player.jumping) {
-            player.y += player.dy;
-            player.dy += 0.5; // gravity
+            player.y += player.dy * deltaTime;
+            player.dy += 0.2; // gravity, adjusted for deltaTime
         }
         for (const platform of platforms) {
             if (player.x < platform.x + platform.width &&
@@ -70,12 +74,12 @@ window.onload = function() {
 
     window.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowRight') {
-            player.dx = 2;
+            player.dx = 2; // adjusted for deltaTime
         } else if (e.key === 'ArrowLeft') {
-            player.dx = -2;
+            player.dx = -2; // adjusted for deltaTime
         } else if (e.key === ' ' && !player.jumping) {
             player.jumping = true;
-            player.dy = -10;
+            player.dy = -8; // jump strength, adjusted for deltaTime
         }
     });
 
@@ -86,5 +90,5 @@ window.onload = function() {
     });
 
     loadLevel();
-    updatePlayer();
+    requestAnimationFrame(updatePlayer);
 }
