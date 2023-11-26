@@ -41,6 +41,7 @@ window.onload = function() {
     function updatePlayer(time = 0) {
         const deltaTime = (time - lastTime) / 10; // convert to seconds
         lastTime = time;
+        onPlatform = false;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawPlayer();
@@ -54,17 +55,24 @@ window.onload = function() {
         for (const platform of platforms) {
             if (player.x < platform.x + platform.width &&
                 player.x + player.width > platform.x &&
-                player.y < platform.y + platform.height &&
-                player.y + player.height > platform.y) {
+                player.y < platform.y  &&
+                player.y + player.height > platform.y &&
+                player.dy > 0) {
                 player.y = platform.y - player.height;
                 player.dy = 0;
                 player.jumping = false;
+                onPlatform = true;
             }
         }
+
         if (player.y + player.height > canvas.height) { // ground
             player.y = canvas.height - player.height;
             player.dy = 0;
             player.jumping = false;
+            onPlatform = true;
+        }
+        if (!onPlatform) {
+            player.jumping = true;
         }
         if (player.x + player.width > canvas.width || player.x < 0) {
             player.dx *= -1;
@@ -77,7 +85,7 @@ window.onload = function() {
             player.dx = 2; // adjusted for deltaTime
         } else if (e.key === 'ArrowLeft') {
             player.dx = -2; // adjusted for deltaTime
-        } else if (e.key === ' ' && !player.jumping) {
+        } else if (e.key === ' ') {
             player.jumping = true;
             player.dy = -8; // jump strength, adjusted for deltaTime
         }
