@@ -8,7 +8,7 @@ window.onload = function() {
         y: canvas.height - 30,
         width: 20,
         height: 30,
-        dx: 2,
+        dx: 0,
         dy: -2,
         jumping: false
     };
@@ -68,18 +68,23 @@ window.onload = function() {
         requestAnimationFrame(updatePlayer);
     }
 
-    updatePlayer();
-
     window.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowRight') {
-            player.dx = Math.abs(player.dx);
+            player.dx = 2;
         } else if (e.key === 'ArrowLeft') {
-            player.dx = -Math.abs(player.dx);
+            player.dx = -2;
         } else if (e.key === ' ' && !player.jumping) {
             player.jumping = true;
             player.dy = -10;
         }
     });
 
+    window.addEventListener('keyup', function(e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            player.dx = 0;
+        }
+    });
+
     loadLevel();
+    updatePlayer();
 }
