@@ -53,7 +53,8 @@ window.onload = function() {
         player.dx = 0;
         if (keys['ArrowRight'] && !keys['ArrowLeft']) player.dx = 2;
         if (keys['ArrowLeft'] && !keys['ArrowRight']) player.dx = -2;
-        if (keys[' '] && !player.jumping) {
+        if (keys['ArrowDown'] && player.onPlatform) player.onPlatform = false;
+        if ((keys[' '] || keys['ArrowUp'] ) && !player.jumping) {
             player.jumping = true;
             player.dy = -8;
         }
@@ -80,6 +81,12 @@ window.onload = function() {
             player.dy = 0;
             player.jumping = false;
             player.onPlatform = true;
+        }
+        if (player.x + player.width > canvas.width) {
+            player.x = canvas.width - player.width;
+        }
+        if (player.x < 0) {
+            player.x = 0;
         }
         if (!player.onPlatform) {
             player.jumping = true;
