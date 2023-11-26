@@ -1,6 +1,7 @@
 // speed_runner/game.js
 window.onload = function() {
-    const canvas = document.getElementById('gameCanvas');
+    let canvas = document.getElementById('gameCanvas');
+    canvas.style.border = '5px solid black';
     const ctx = canvas.getContext('2d');
 
     const player = {
@@ -19,10 +20,14 @@ window.onload = function() {
     let lastTime = 0;
     let keys = {};
 
+    let finishLiney = 100
+
     function loadLevel() {
         fetch(`levels/level${level}.json`)
             .then(response => response.json())
             .then(data => platforms = data);
+        player.x = canvas.width / 2;
+        player.y = canvas.height - 30;
     }
 
     function drawPlayer() {
@@ -38,6 +43,7 @@ window.onload = function() {
     function drawLevel() {
         ctx.font = '20px Arial';
         ctx.fillText(`Level: ${level}`, 10, 30);
+        ctx.fillRect(0, finishLiney, canvas.width, 5); // finish line
     }
 
     function updatePlayer(time = 0) {
@@ -94,6 +100,13 @@ window.onload = function() {
         if (player.x + player.width > canvas.width || player.x < 0) {
             player.dx *= -1;
         }
+ 
+        // Check if the player has reached the finish line
+        if (player.y <= finishLiney) {
+            level++;
+            loadLevel();
+        }
+
         requestAnimationFrame(updatePlayer);
     }
 
