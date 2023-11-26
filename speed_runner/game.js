@@ -10,12 +10,14 @@ window.onload = function() {
         height: 30,
         dx: 0,
         dy: 0,
-        jumping: false
+        jumping: false,
+        onPlatform: true
     };
 
     let platforms = [];
     let level = 1;
     let lastTime = 0;
+    let keys = {};
 
     function loadLevel() {
         fetch(`levels/level${level}.json`)
@@ -41,12 +43,20 @@ window.onload = function() {
     function updatePlayer(time = 0) {
         const deltaTime = (time - lastTime) / 10; // convert to seconds
         lastTime = time;
-        onPlatform = false;
+        player.onPlatform = false;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawPlayer();
         drawPlatforms();
         drawLevel();
+
+        player.dx = 0;
+        if (keys['ArrowRight'] && !keys['ArrowLeft']) player.dx = 2;
+        if (keys['ArrowLeft'] && !keys['ArrowRight']) player.dx = -2;
+        if (keys[' '] && !player.jumping) {
+            player.jumping = true;
+            player.dy = -8;
+        }
         player.x += player.dx * deltaTime;
         if (player.jumping) {
             player.y += player.dy * deltaTime;
@@ -61,7 +71,7 @@ window.onload = function() {
                 player.y = platform.y - player.height;
                 player.dy = 0;
                 player.jumping = false;
-                onPlatform = true;
+                player.onPlatform = true;
             }
         }
 
@@ -69,9 +79,9 @@ window.onload = function() {
             player.y = canvas.height - player.height;
             player.dy = 0;
             player.jumping = false;
-            onPlatform = true;
+            player.onPlatform = true;
         }
-        if (!onPlatform) {
+        if (!player.onPlatform) {
             player.jumping = true;
         }
         if (player.x + player.width > canvas.width || player.x < 0) {
@@ -81,20 +91,11 @@ window.onload = function() {
     }
 
     window.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowRight') {
-            player.dx = 2; // adjusted for deltaTime
-        } else if (e.key === 'ArrowLeft') {
-            player.dx = -2; // adjusted for deltaTime
-        } else if (e.key === ' ') {
-            player.jumping = true;
-            player.dy = -8; // jump strength, adjusted for deltaTime
-        }
+        keys[e.key] = true;
     });
 
     window.addEventListener('keyup', function(e) {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-            player.dx = 0;
-        }
+        keys[e.key] = false;
     });
 
     loadLevel();
