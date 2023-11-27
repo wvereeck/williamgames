@@ -80,7 +80,7 @@ window.onload = function() {
         player.x += player.dx * deltaTime;
         if (player.jumping) {
             player.y += player.dy * deltaTime;
-            player.dy += 0.21; // gravity, adjusted for deltaTime
+            player.dy += 0.3 * deltaTime; // gravity, adjusted for deltaTime
         }
         for (const platform of platforms) {
             if (player.x < platform.x + platform.width &&
