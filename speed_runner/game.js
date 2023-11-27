@@ -46,15 +46,28 @@ window.onload = function() {
         ctx.fillRect(0, finishLiney, canvas.width, 5); // finish line
     }
 
+    function drawYouWin() {
+        // Clear the game canvas and display the win message
+        ctx.clearRect(0, 100, canvas.width, canvas.height);
+        ctx.font = '50px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('YOU WIN!', canvas.width / 2, canvas.height / 2);
+    }
+
     function updatePlayer(time = 0) {
         const deltaTime = (time - lastTime) / 10; // convert to seconds
         lastTime = time;
         player.onPlatform = false;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (level <= 5) { 
+            drawPlatforms(); 
+            drawLevel();
+        } else { 
+            drawYouWin(); 
+        }
         drawPlayer();
-        drawPlatforms();
-        drawLevel();
+
 
         player.dx = 0;
         if (keys['ArrowRight'] && !keys['ArrowLeft']) player.dx = 2;
