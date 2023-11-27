@@ -70,8 +70,8 @@ window.onload = function() {
 
 
         player.dx = 0;
-        if (keys['ArrowRight'] && !keys['ArrowLeft']) player.dx = 2;
-        if (keys['ArrowLeft'] && !keys['ArrowRight']) player.dx = -2;
+        if (keys['ArrowRight'] && !keys['ArrowLeft']) player.dx = 3 * deltaTime;
+        if (keys['ArrowLeft'] && !keys['ArrowRight']) player.dx = -3 * deltaTime;
         if (keys['ArrowDown'] && player.onPlatform) player.onPlatform = false;
         if ((keys[' '] || keys['ArrowUp'] ) && !player.jumping) {
             player.jumping = true;
@@ -80,7 +80,7 @@ window.onload = function() {
         player.x += player.dx * deltaTime;
         if (player.jumping) {
             player.y += player.dy * deltaTime;
-            player.dy += 0.2; // gravity, adjusted for deltaTime
+            player.dy += 0.3 * deltaTime; // gravity, adjusted for deltaTime
         }
         for (const platform of platforms) {
             if (player.x < platform.x + platform.width &&
@@ -109,9 +109,6 @@ window.onload = function() {
         }
         if (!player.onPlatform) {
             player.jumping = true;
-        }
-        if (player.x + player.width > canvas.width || player.x < 0) {
-            player.dx *= -1;
         }
  
         // Check if the player has reached the finish line
