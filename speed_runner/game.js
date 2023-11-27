@@ -70,8 +70,8 @@ window.onload = function() {
 
 
         player.dx = 0;
-        if (keys['ArrowRight'] && !keys['ArrowLeft']) player.dx = 3 * deltaTime;
-        if (keys['ArrowLeft'] && !keys['ArrowRight']) player.dx = -3 * deltaTime;
+        if (keys['ArrowRight'] && !keys['ArrowLeft']) player.dx = 3;
+        if (keys['ArrowLeft'] && !keys['ArrowRight']) player.dx = -3;
         if (keys['ArrowDown'] && player.onPlatform) player.onPlatform = false;
         if ((keys[' '] || keys['ArrowUp'] ) && !player.jumping) {
             player.jumping = true;
