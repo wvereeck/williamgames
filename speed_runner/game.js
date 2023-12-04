@@ -48,6 +48,8 @@ window.onload = function() {
             .then(data => platforms = data);
         player.x = canvas.width / 2;
         player.y = canvas.height - 30;
+        player.dx = 0;
+        player.dy = 0;
     }
 
     function drawPlayer() {
