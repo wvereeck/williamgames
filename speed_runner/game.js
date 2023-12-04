@@ -16,6 +16,14 @@ window.onload = function() {
         direction: 'left'
     };
 
+    // Define the resetDoor
+    let resetDoor = {
+        x: canvas.width - 50,
+        y: canvas.height - 75,
+        width: 50,
+        height: 75
+    };
+
     let platforms = [];
     let level = 1;
     let lastTime = 0;
@@ -43,9 +51,11 @@ window.onload = function() {
     }
 
     function loadLevel() {
+        if (level <= 5) {
         fetch(`levels/level${level}.json`)
             .then(response => response.json())
             .then(data => platforms = data);
+        }
         player.x = canvas.width / 2;
         player.y = canvas.height - 30;
         player.dx = 0;
@@ -83,7 +93,8 @@ window.onload = function() {
 
     function drawLevel() {
         ctx.font = '20px Arial';
-        ctx.fillText(`Level: ${level}`, 10, 30);
+        ctx.textAlign = 'center';
+        ctx.fillText(`Level: ${level}`, 45, 30);
         ctx.fillRect(0, finishLiney, canvas.width, 5); // finish line
     }
 
@@ -93,6 +104,14 @@ window.onload = function() {
         ctx.font = '50px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('YOU WIN!', canvas.width / 2, canvas.height / 2);
+    }
+
+    function drawResetDoor() {
+        // Draw the door rectangle at the bottom right of the canvas
+        ctx.font = '15px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Reset', canvas.width - 25, canvas.height - 80);
+        ctx.fillRect(resetDoor.x, resetDoor.y, resetDoor.width, resetDoor.height);
     }
 
     function updatePlayer(time = 0) {
@@ -105,7 +124,8 @@ window.onload = function() {
             drawPlatforms(); 
             drawLevel();
         } else { 
-            drawYouWin(); 
+            drawYouWin();
+            drawResetDoor();
         }
         drawPlayer();
 
@@ -173,6 +193,15 @@ window.onload = function() {
         // Check if the player has reached the finish line
         if (player.y <= finishLiney) {
             level++;
+            loadLevel();
+        }
+
+        // Check if the player has reached the reset door
+        if (level == 6 && player.x + player.width >= resetDoor.x &&
+            player.x <= resetDoor.x + resetDoor.width &&
+            player.y + player.height >= resetDoor.y &&
+            player.y <= resetDoor.y + resetDoor.height) {
+            level = 1;
             loadLevel();
         }
 
