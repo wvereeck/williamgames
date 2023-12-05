@@ -7,6 +7,8 @@ window.onload = function() {
     const player = {
         x: canvas.width / 2,
         y: canvas.height - 30,
+        previousX: canvas.width / 2,
+        previousY: canvas.height - 30,
         width: 50,
         widthOffset: 15,
         height: 50,
@@ -56,6 +58,8 @@ window.onload = function() {
             .then(response => response.json())
             .then(data => platforms = data);
         }
+        player.previousX = player.x;
+        player.previousY = player.y;
         player.x = canvas.width / 2;
         player.y = canvas.height - 30;
         player.dx = 0;
@@ -144,17 +148,20 @@ window.onload = function() {
             player.jumping = true;
             player.dy = -8;
         }
+        player.previousX = player.x;
         player.x += player.dx * deltaTime;
         if (player.jumping) {
+            player.previousY = player.y;
             player.y += player.dy * deltaTime;
             player.dy += 0.3 * deltaTime; // gravity, adjusted for deltaTime
         }
         for (const platform of platforms) {
             if (player.x < platform.x - player.widthOffset + platform.width &&
                 player.x + player.width > platform.x + player.widthOffset &&
-                player.y + player.height < platform.y  &&
-                player.y + player.height + player.dy > platform.y &&
+                player.previousY + player.height <= platform.y  &&
+                player.y + player.height >= platform.y &&
                 player.dy > 0) {
+                player.previousY = platform.y - player.height;
                 player.y = platform.y - player.height;
                 player.dy = 0;
                 player.jumping = false;
@@ -166,9 +173,11 @@ window.onload = function() {
             player.jumping = false;
         }
         if (player.x > canvas.width - player.width + player.widthOffset) {
+            player.previousX = player.x;
             player.x = canvas.width - player.width + player.widthOffset;
         }
         if (player.x < 0 - player.widthOffset) {
+            player.previousX = player.x;
             player.x = 0 - player.widthOffset;
         }
 
